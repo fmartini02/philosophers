@@ -6,7 +6,7 @@
 /*   By: fmartini <@marvin>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 18:22:47 by fmartini          #+#    #+#             */
-/*   Updated: 2023/10/30 16:48:49 by fmartini         ###   ########.fr       */
+/*   Updated: 2023/10/31 16:10:21 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ typedef struct s_args
 	int				sleep_t;
 	int				deaths;
 	int				x;
-	int				regulator;
+	int				sync;
 	pthread_t		*thread_arr;
 	pthread_mutex_t	**mutex_arr;
 }				t_args;
@@ -73,7 +73,7 @@ void	ft_init_resurce(t_args *args, char **av)
 	args->sleep_t = ft_atoi(av[4]);
 	args->n_philo = 0;
 	args->deaths = 0;
-	args->regulator = 0;
+	args->sync = 0;
 	args->thread_arr = malloc(sizeof(pthread_t) * args->x);
 	if (args->thread_arr == NULL)
 		ft_ferror();
@@ -86,8 +86,7 @@ void	ft_think(t_args *args, int i)
 	struct timeval start;
 	struct timeval end;
 	gettimeofday(&start, NULL);
-	pthread_mutex_lock(args->mutex_arr[i]);
-	pthread_mutex_lock(args->mutex_arr[args->n_philo]);
+	usleep(1);
 	gettimeofday(&end, NULL);
 	elapsed_ms = (end.tv_sec - start.tv_sec) * 1e6;
 	elapsed_ms += (end.tv_usec - start.tv_usec);
@@ -127,6 +126,8 @@ void	ft_eat(t_args *args, int i)
 	struct timeval end;
 	
 	gettimeofday(&start, NULL);
+	pthread_mutex_lock(args->mutex_arr[i]);
+	pthread_mutex_lock(args->mutex_arr[args->n_philo]);
 	usleep(args->eat_t);
 	pthread_mutex_unlock(args->mutex_arr[i]);
 	pthread_mutex_unlock(args->mutex_arr[args->n_philo]);
@@ -152,6 +153,8 @@ void	*ft_iter(void *arg)
 	args = (t_args *)arg;
 	i = args->n_philo - args->x;
 	args->x--;
+	while(args->sync == 0)
+		printf("waiting for syncrhonization...\n");
 	while(args->deaths == 0)
 	{
 		ft_eat(args, i);
@@ -166,14 +169,13 @@ void	ft_philo(t_args *args )
 	int	i;
 
 	i = 1;
-	printf("%ld\n", args->thread_arr[i-1]);
 	while(i <= args->x)
 	{
 		pthread_create(&args->thread_arr[i - 1], NULL, ft_iter, args);
 		i += 2;
-		printf("%ld\n", args->thread_arr[i-1]);
 	}
 	i = 2;
+	args->sync = 1;
 	while(i <= args->x)
 	{
 		printf("%ld\n", args->thread_arr[i-1]);
