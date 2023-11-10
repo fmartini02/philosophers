@@ -6,7 +6,7 @@
 /*   By: fmartini <@marvin>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 18:15:27 by fmartini          #+#    #+#             */
-/*   Updated: 2023/11/06 18:23:40 by fmartini         ###   ########.fr       */
+/*   Updated: 2023/11/10 17:52:35 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,28 @@ typedef struct s_args
 	pthread_mutex_t	**mutex_arr;
 }				t_args;
 
+typedef struct s_waiter
+{
+	int	**id_stat;
+	int	**mut_stat;
+	int	**id_n_eat;
+}			t_waiter;
+
+typedef struct s_philo
+{
+	int			id;
+	t_args		*args;
+	t_waiter	*waiter;
+}				t_philo;
 
 void	ft_error(void);
 void	ft_ferror(void);
-void	ft_sleep(t_args *args, int i);
-void	ft_eat(t_args *args, int i);
-void	ft_think(t_args *args, int i);
+void	ft_sleep(t_philo *args);
+void	ft_eat(t_philo *args);
+void	ft_think(t_philo *args);
 void	*ft_iter(void *arg);
-void	ft_philo(t_args *args);
+void	ft_philo(t_philo *philo);
 int		ft_atoi(char *str);
 void	ft_mutex_init(t_args *args);
-void	ft_init_resurce(t_args *args, char **av);
+void	ft_struct_init(t_args *args, t_philo *philo, t_waiter *waiter);
+void	ft_init_resurce(t_args *args, t_philo *philo, t_waiter *waiter, char **av);

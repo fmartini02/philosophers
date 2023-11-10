@@ -6,7 +6,7 @@
 /*   By: fmartini <@marvin>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 18:10:15 by fmartini          #+#    #+#             */
-/*   Updated: 2023/11/06 18:29:14 by fmartini         ###   ########.fr       */
+/*   Updated: 2023/11/10 17:54:59 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	ft_mutex_init(t_args *args)
 	}
 }
 
-void	ft_init_resurce(t_args *args, char **av)
+void	ft_init_resurce(t_args *args, t_philo *philo, t_waiter *waiter, char **av)
 {
 	int	t;
 
@@ -83,8 +83,9 @@ void	ft_init_resurce(t_args *args, char **av)
 	args->n_philo = t;
 	args->deaths = 0;
 	args->sync = 0;
+	ft_struct_init(args, philo, waiter);
 	args->thread_arr = malloc(sizeof(pthread_t) * args->x);
 	if (args->thread_arr == NULL)
 		ft_ferror();
 	ft_mutex_init(args);
-} 
+}
