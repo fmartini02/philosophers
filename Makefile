@@ -6,7 +6,7 @@
 #    By: fmartini <@marvin>                         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/06 18:24:04 by fmartini          #+#    #+#              #
-#    Updated: 2023/11/10 17:51:52 by fmartini         ###   ########.fr        #
+#    Updated: 2023/11/16 17:45:38 by fmartini         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ CC = gcc
 
 CFLAGS = -Wall -Wextra -Werror -g -pthread
 
-SRC = main.c ft_actions.c ft_utils.c ft_struct_init.c 
+SRC = main.c ft_actions.c ft_utils.c ft_struct_init.c ft_mutex_logic.c ft_time.c 
 
 OBJ = $(SRC:.c=.o)
 

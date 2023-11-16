@@ -6,7 +6,7 @@
 /*   By: fmartini <@marvin>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 18:13:54 by fmartini          #+#    #+#             */
-/*   Updated: 2023/11/10 17:50:28 by fmartini         ###   ########.fr       */
+/*   Updated: 2023/11/16 18:08:32 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,9 @@
 void	ft_think(t_philo *philo)
 {
 	long elapsed_ms;
-	struct timeval start;
-	struct timeval end;
-	gettimeofday(&start, NULL);
-	usleep(1000);
-	gettimeofday(&end, NULL);
-	elapsed_ms = (end.tv_sec - start.tv_sec) * 1000 + (end.tv_usec - start.tv_usec) / 1000;
+
+	philo->waiter->id_stat[philo->id - 1][1] = 3;/*3 = thinking*/
+	elapsed_ms = ft_get_time();
 	if(elapsed_ms >= philo->args->die_t)
 	{
 		printf("nphilosopher number: %d is now dead\n", philo->id);
@@ -33,13 +30,9 @@ void	ft_think(t_philo *philo)
 void	ft_sleep(t_philo *philo)
 {
 	long elapsed_ms;
-	struct timeval start;
-	struct timeval end;
 	
-	gettimeofday(&start, NULL);
 	usleep(philo->args->sleep_t * 1000);
-	gettimeofday(&end, NULL);
-	elapsed_ms = (end.tv_sec - start.tv_sec) * 1000 + (end.tv_usec - start.tv_usec) / 1000;
+	elapsed_ms = ft_get_time();
 	if(elapsed_ms >= philo->args->die_t)
 	{
 		printf("nphilosopher number: %d is now dead\n", philo->id);
@@ -51,14 +44,12 @@ void	ft_sleep(t_philo *philo)
 
 void	ft_eat(t_philo *philo)
 {
-    long elapsed_ms;
-    struct timeval start;
-    struct timeval end;
+    long int elapsed_ms;
     
-    gettimeofday(&start, NULL);
+	ft_waiter(philo);
     usleep(philo->args->eat_t * 1000);
-    gettimeofday(&end, NULL);
-    elapsed_ms = (end.tv_sec - start.tv_sec) * 1000 + (end.tv_usec - start.tv_usec) / 1000;
+	ft_unlock(philo);
+    elapsed_ms = ft_get_time();
     if(elapsed_ms >= philo->args->die_t)
     {
         printf("philosopher number: %d is now dead\n", philo->id);
@@ -68,11 +59,13 @@ void	ft_eat(t_philo *philo)
     printf("time to eat: %ld \nphilosopher number: %d is now sleeping\n", elapsed_ms, philo->id);
 }
 
-void	*ft_iter(void *philo_ptr)
+void	*ft_routine(void *philo_ptr)
 {
 	t_philo	*philo;
 
 	philo = (t_philo *)philo_ptr;
+	if (philo->id % 2 == 0)
+		usleep(philo->args->eat_t * 1000);
 	while(philo->args->deaths == 0)
 	{
 		ft_eat(philo);
@@ -84,22 +77,19 @@ void	*ft_iter(void *philo_ptr)
 
 void	ft_philo(t_philo *philo)
 {
-	int	i;
 	int	j;
 
-	i = 1;
 	j = 0;
-	while(i <= philo->args->n_philo)
+	while(j <= philo->args->n_philo - 1)
 	{
-		pthread_create(&philo->args->thread_arr[i - 1], NULL, ft_iter, &philo[j]);
-		printf("\t%d\n", i);
-		i++;
+		pthread_create(&philo->args->thread_arr[j], NULL, ft_routine, &philo[j]);
+		printf("%d\n", j+1);
 		j++;
 	}
-	i = 0;
-	while(i < philo->args->n_philo)
+	j = 0;
+	while(j < philo->args->n_philo - 1)
 	{
-		pthread_join(philo->args->thread_arr[i], NULL);
-		i++;
+		pthread_join(philo->args->thread_arr[j], NULL);
+		j++;
 	}
 }

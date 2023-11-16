@@ -6,7 +6,7 @@
 /*   By: fmartini <@marvin>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 16:51:52 by fmartini          #+#    #+#             */
-/*   Updated: 2023/11/10 17:57:26 by fmartini         ###   ########.fr       */
+/*   Updated: 2023/11/13 16:50:16 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	ft_struct_init(t_args *args, t_philo *philo, t_waiter *waiter)
 	t = args->n_philo;
 	while (philo[i].id < t)
 	{
-		philo[i].id = i;
+		philo[i].id = i + 1;
 		philo[i].args = args;
 		philo[i].waiter = waiter;
 		i++;

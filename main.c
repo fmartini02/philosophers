@@ -6,7 +6,7 @@
 /*   By: fmartini <@marvin>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 18:22:47 by fmartini          #+#    #+#             */
-/*   Updated: 2023/11/10 17:47:23 by fmartini         ###   ########.fr       */
+/*   Updated: 2023/11/16 18:08:05 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	main(int ac, char **av)
 	
 	if (ac < 5 || ac > 6)
 		ft_error();
-	philo = malloc(sizeof(t_philo) * ft_atoi(av[1]));
+	philo = malloc(sizeof(t_philo) * (ft_atoi(av[1])));
 	if (philo == NULL)
 		ft_ferror();
 	waiter = malloc(sizeof(t_waiter));
