@@ -6,7 +6,7 @@
 /*   By: fmartini <@marvin>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 18:10:15 by fmartini          #+#    #+#             */
-/*   Updated: 2023/11/16 17:46:04 by fmartini         ###   ########.fr       */
+/*   Updated: 2023/11/20 17:27:53 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,10 @@ void	ft_mutex_init(t_args *args)
 
 	t = args->x;
 	i = 0;
+	args->time = malloc(sizeof(pthread_mutex_t));
+	if (args->time == NULL)
+		ft_ferror();
+	pthread_mutex_init(args->time, NULL);
 	args->mutex_arr = malloc(t * sizeof(pthread_mutex_t*));
 	if (args->mutex_arr == NULL)
 		ft_ferror();

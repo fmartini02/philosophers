@@ -6,38 +6,40 @@
 /*   By: fmartini <@marvin>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 17:38:30 by fmartini          #+#    #+#             */
-/*   Updated: 2023/11/16 18:11:40 by fmartini         ###   ########.fr       */
+/*   Updated: 2023/11/20 17:28:41 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	ft_give_time()
+long int	ft_give_time()
 {
 	struct timeval	time;
-	int				ms;
+	long int		ms;
 
 	gettimeofday(&time, NULL);
 	ms = (time.tv_sec * 1000) + (time.tv_usec / 1000);
 	return (ms);
 }
 
-int	ft_get_time()
+long int ft_time(char *s, t_philo *philo)
 {
-	static	int		last = 0;
-	long int		now;
+    long int		now;
+	long int		res;
+	static long int	last;
 
-	if (last == 0)
+	pthread_mutex_lock(philo->args->time);
+    if (*s == '\0')
 	{
-		printf("first time = %d\n", last);
 		last = ft_give_time();
+		res = 0;
 	}
-	else
+	else 
 	{
 		now = ft_give_time();
-		printf("time = %ld\n", now - last);
+		res = now - last;
 		last = now;
 	}
-	printf("last = %d\n", last);
-	return (last);
+	pthread_mutex_unlock(philo->args->time);
+	return (res);
 }
