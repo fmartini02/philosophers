@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmartini <@marvin>                         +#+  +:+       +#+        */
+/*   By: fmartini <fmartini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 18:10:15 by fmartini          #+#    #+#             */
-/*   Updated: 2023/11/20 17:27:53 by fmartini         ###   ########.fr       */
+/*   Updated: 2023/12/11 17:34:50 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,10 @@ void	ft_mutex_init(t_args *args)
 	if (args->time == NULL)
 		ft_ferror();
 	pthread_mutex_init(args->time, NULL);
+	args->pick_forks_mutex = malloc(sizeof(pthread_mutex_t));
+	if (args->pick_forks_mutex == NULL)
+		ft_ferror();
+	pthread_mutex_init(args->pick_forks_mutex, NULL);
 	args->mutex_arr = malloc(t * sizeof(pthread_mutex_t*));
 	if (args->mutex_arr == NULL)
 		ft_ferror();
@@ -81,13 +85,14 @@ void	ft_init_resurce(t_args *args, t_philo *philo, t_waiter *waiter, char **av)
 
 	args->x = ft_atoi(av[1]);
 	t = args->x;
+	args->start = 0;
 	args->die_t = ft_atoi(av[2]);
 	args->eat_t = ft_atoi(av[3]);
 	args->sleep_t = ft_atoi(av[4]);
 	args->n_philo = t;
 	args->deaths = 0;
-	ft_struct_init(args, philo, waiter);
-	args->thread_arr = malloc(sizeof(pthread_t) * args->x);
+	ft_struct_init(args, philo, waiter, av);
+	args->thread_arr = malloc(sizeof(pthread_t) * (args->n_philo + 1));
 	if (args->thread_arr == NULL)
 		ft_ferror();
 	ft_mutex_init(args);

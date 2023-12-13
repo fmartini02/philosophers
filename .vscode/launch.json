@@ -6,7 +6,7 @@
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/philosophers",
-      "args": ["2", "100000", "500","400"],
+      "args": ["4", "4000", "200","200", "10"],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
       "environment": [],

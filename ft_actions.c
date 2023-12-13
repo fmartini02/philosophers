@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_actions.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmartini <@marvin>                         +#+  +:+       +#+        */
+/*   By: fmartini <fmartini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 18:13:54 by fmartini          #+#    #+#             */
-/*   Updated: 2023/11/20 17:30:11 by fmartini         ###   ########.fr       */
+/*   Updated: 2023/12/13 16:04:46 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,86 +14,107 @@
 
 void	ft_think(t_philo *philo)
 {
-	long elapsed_ms;
+	int		id;
+	long	timestamp;
 
-	philo->waiter->id_stat[philo->id - 1][1] = 3;/*3 = thinking*/
-	usleep(1000);
-	elapsed_ms = ft_time("t", philo);
-	if(elapsed_ms >= philo->args->die_t)
-	{
-		printf("nphilosopher number: %d is now dead\n", philo->id);
-		philo->args->deaths = 1;
-		exit(0);
-	}
-	printf("time to think: %ld \nphilosopher number: %d is now eating\n", elapsed_ms, philo->id);
+	if (ft_check_deadness(philo))
+		return ;
+	id = philo->id;
+	timestamp = ft_time2(philo);
+	philo->status = THINKING;
+	philo->lap_current = ft_give_time();
+	if (ft_check_deadness(philo))
+		return ;
+	printf("timestamp:%ld %d is now eating\n\n",timestamp, id);/*inizia a mangiare*/
 }
 
 void	ft_sleep(t_philo *philo)
 {
-	long elapsed_ms;
-	
+	long timestamp;
+	int id;
+
+	if (ft_check_deadness(philo))
+		return ;
+	id = philo->id;
+	philo->status = SLEEPING;
 	usleep(philo->args->sleep_t * 1000);
-	elapsed_ms = ft_time("s", philo);
-	if(elapsed_ms >= philo->args->die_t)
-	{
-		printf("nphilosopher number: %d is now dead\n", philo->id);
-		philo->args->deaths = 1;
-		exit(0);
-	}
-	printf("time to sleep: %ld \nphilosopher number: %d is now thinking\n", elapsed_ms, philo->id);
+	timestamp = ft_time2(philo);
+	philo->lap_current = ft_give_time();
+	philo->time_of_starv = philo->lap_current - philo->lap_start;
+	if (ft_check_deadness(philo))
+		return;
+	printf("timestamp:%ld %d is now thinking\n\n",timestamp, id);
 }
 
 void	ft_eat(t_philo *philo)
 {
-    long	elapsed_ms;
-    
-	ft_waiter(philo);
-    usleep(philo->args->eat_t * 1000);
-	ft_unlock(philo);
-    elapsed_ms = ft_time("e", philo);
-    if(elapsed_ms >= philo->args->die_t)
-    {
-        printf("philosopher number: %d is now dead\n", philo->id);
-        philo->args->deaths = 1;
-        exit(0);
-    }
-    printf("time to eat: %ld \nphilosopher number: %d is now sleeping\n", elapsed_ms, philo->id);
+	long	timestamp;
+	int		id;
+	int		tot;
+
+	id = philo->id;
+	tot = philo->args->n_philo;
+	if (ft_check_deadness(philo))
+		return;       
+	philo->lap_start = ft_give_time();/*per calcolare se il tempo di mangiata è più grande di die_t*/
+	ft_give_mutex(id, tot, philo);/*per dare le forchette*/
+	philo->status = EATING;/*per dire al waiter che sta mangiando*/
+	usleep(philo->args->eat_t * 1000);/*tempo per mangiare*/
+	ft_drop_mutex(id, tot, philo);/*per lasciare le forchette*/
+	timestamp = ft_time2(philo);/*per dare il timestamp*/
+	philo->lap_current = ft_give_time();/*per calcolare il tempo passato dall`inizio della mangiata*/
+	if (ft_check_deadness(philo))/*per controllare se è morto*/
+		return;
+	philo->lap_start = ft_give_time();/*per risettare il lap*/
+	printf("timestamp:%ld %d is now sleeping\n\n",timestamp, id);
 }
 
 void	*ft_routine(void *philo_ptr)
 {
 	t_philo	*philo;
+	int		eat_count;
+	int		eat_num;
 
 	philo = (t_philo *)philo_ptr;
+	eat_count = 0;
+	eat_num = philo->eat_num;
+	if (eat_num < 0)/*nel caso non ci sia quante volte mangiare*/
+	{
+		eat_count = -2147483647;
+		eat_num = 2147483647;
+	}
 	if (philo->id % 2 == 0)
-		usleep(philo->args->eat_t * 1000);
-	while(philo->args->deaths == 0)
+		usleep(3000);
+	while(philo->args->deaths == 0 && eat_count < eat_num)
 	{
 		ft_eat(philo);
 		ft_sleep(philo);
 		ft_think(philo);
+		eat_count++;
 	}
 	return (NULL);
 }
 
-void	ft_philo(t_philo *philo)
+void	ft_philo(t_waiter *waiter)
 {
-	int			j;
-	long int	t;
+	int	i;
+	int	n_philo;
 
-	j = 0;
-	t = ft_time("", philo);
-	t++;
-	while(j <= philo->args->n_philo - 1)
+	i = 1;
+	n_philo = waiter->args->n_philo;
+	waiter->args->start = ft_give_time();
+	pthread_create(&waiter->args->thread_arr[0], NULL, ft_waiter_routine, waiter);
+	while(i <= n_philo)
 	{
-		pthread_create(&philo->args->thread_arr[j], NULL, ft_routine, &philo[j]);
-		printf("%d\n", j+1);
-		j++;
+		pthread_create(&waiter->args->thread_arr[i], NULL, ft_routine, &waiter->philo[i-1]);
+		//printf("philo %d created\n", i + 1);
+		i++;
 	}
-	j = 0;
-	while(j < philo->args->n_philo - 1)
+	i = 0;
+	while(i < n_philo + 1)
 	{
-		pthread_join(philo->args->thread_arr[j], NULL);
-		j++;
+		pthread_join(waiter->args->thread_arr[i], NULL);
+		i++;
 	}
+	ft_mem_free(waiter->args, waiter->philo, waiter);
 }

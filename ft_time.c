@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_time.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmartini <@marvin>                         +#+  +:+       +#+        */
+/*   By: fmartini <fmartini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 17:38:30 by fmartini          #+#    #+#             */
-/*   Updated: 2023/11/20 17:28:41 by fmartini         ###   ########.fr       */
+/*   Updated: 2023/12/13 15:19:45 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,24 +22,29 @@ long int	ft_give_time()
 	return (ms);
 }
 
-long int ft_time(char *s, t_philo *philo)
+long int ft_time2(t_philo *philo)
 {
-    long int		now;
 	long int		res;
-	static long int	last;
 
-	pthread_mutex_lock(philo->args->time);
-    if (*s == '\0')
+	res = ft_give_time() - philo->args->start;
+	return (res);
+}
+
+int ft_check_deadness(t_philo *philo)
+{
+	int res;
+
+	res = 0;
+	if (philo->status == START)
+		return (res);
+	if (philo->lap_current == 0)
+		philo->time_of_starv = philo->lap_start - philo->args->start;
+	philo->time_of_starv = philo->lap_current - philo->lap_start;
+	if (philo->time_of_starv >= philo->args->die_t)
 	{
-		last = ft_give_time();
-		res = 0;
+		//printf("starvation time:%ld\n", philo->time_of_starv);
+		philo->status = DEAD;
+		res = 1;
 	}
-	else 
-	{
-		now = ft_give_time();
-		res = now - last;
-		last = now;
-	}
-	pthread_mutex_unlock(philo->args->time);
 	return (res);
 }
