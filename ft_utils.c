@@ -6,22 +6,33 @@
 /*   By: fmartini <fmartini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 18:10:15 by fmartini          #+#    #+#             */
-/*   Updated: 2023/12/11 17:34:50 by fmartini         ###   ########.fr       */
+/*   Updated: 2023/12/18 16:54:49 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	ft_error(void)
-{
-	printf("Error:\nwrong arguments\n");
-	exit(0);
-}
-
 void	ft_ferror(void)
 {
-	printf("Error:\nfunction failed\n");
-	exit(0);
+	printf("heap allocation failed\n");
+	exit(1);
+}
+
+uint64_t	gettimeofday_ms(void)
+{
+	static struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * (uint64_t)1000) + (tv.tv_usec / 1000));
+}
+
+uint64_t	timestamp_in_ms(void)
+{
+	static uint64_t	start = 0;
+
+	if (start == 0)
+		start = gettimeofday_ms();
+	return (gettimeofday_ms() - start);
 }
 
 int	ft_atoi(char *str)
@@ -50,50 +61,11 @@ int	ft_atoi(char *str)
 	return (nmb *= sign);
 }
 
-void	ft_mutex_init(t_args *args)
+void ft_free_mem(t_args *args)
 {
-	int	t;
-	int	i;
-
-	t = args->x;
-	i = 0;
-	args->time = malloc(sizeof(pthread_mutex_t));
-	if (args->time == NULL)
-		ft_ferror();
-	pthread_mutex_init(args->time, NULL);
-	args->pick_forks_mutex = malloc(sizeof(pthread_mutex_t));
-	if (args->pick_forks_mutex == NULL)
-		ft_ferror();
-	pthread_mutex_init(args->pick_forks_mutex, NULL);
-	args->mutex_arr = malloc(t * sizeof(pthread_mutex_t*));
-	if (args->mutex_arr == NULL)
-		ft_ferror();
-	t--;
-	while(i <= t)
-	{
-		args->mutex_arr[i] = malloc(sizeof(pthread_mutex_t));
-		if (args->mutex_arr[i] == NULL)
-			ft_ferror();
-		pthread_mutex_init(args->mutex_arr[i], NULL);
-		i++;
-	}
-}
-
-void	ft_init_resurce(t_args *args, t_philo *philo, t_waiter *waiter, char **av)
-{
-	int	t;
-
-	args->x = ft_atoi(av[1]);
-	t = args->x;
-	args->start = 0;
-	args->die_t = ft_atoi(av[2]);
-	args->eat_t = ft_atoi(av[3]);
-	args->sleep_t = ft_atoi(av[4]);
-	args->n_philo = t;
-	args->deaths = 0;
-	ft_struct_init(args, philo, waiter, av);
-	args->thread_arr = malloc(sizeof(pthread_t) * (args->n_philo + 1));
-	if (args->thread_arr == NULL)
-		ft_ferror();
-	ft_mutex_init(args);
+	pthread_mutex_destroy(&args->print_m);
+	free(args->philo);
+	free(args->mutex_arr);
+	free(args->thread_arr);
+	free(args);
 }
