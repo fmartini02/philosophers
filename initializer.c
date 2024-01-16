@@ -6,7 +6,7 @@
 /*   By: fmartini <fmartini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 16:51:52 by fmartini          #+#    #+#             */
-/*   Updated: 2024/01/15 17:15:47 by fmartini         ###   ########.fr       */
+/*   Updated: 2024/01/16 15:50:00 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,10 @@ void	ft_mutex_init(t_args *args)
 
 	n_philos = args->n_philos;
 	i = 0;
-	args->mutex_arr = malloc(sizeof(pthread_mutex_t) * (n_philos + 1));
-	while (i < n_philos + 1)
+	args->mutex_arr = malloc(sizeof(pthread_mutex_t) * (n_philos));
+	if (args->mutex_arr == NULL)
+		ft_ferror();
+	while (i < n_philos)
 	{
 		pthread_mutex_init(&args->mutex_arr[i], NULL);
 		i++;
@@ -43,13 +45,16 @@ t_args	*ft_init_resurce(char **av)
 	args->die_t = ft_atoi(av[2]);
 	args->eat_t = ft_atoi(av[3]);
 	args->sleep_t = ft_atoi(av[4]);
-	args->times_to_eat = ft_atoi(av[5]);
+	if (av[5])
+		args->times_to_eat = ft_atoi(av[5]);
+	else
+		args->times_to_eat = -1;
 	args->philo = philo;
-	ft_struct_init(args, philo);
 	args->thread_arr = malloc(sizeof(pthread_t) * (args->n_philos + 1));
 	if (args->thread_arr == NULL)
 		ft_ferror();
 	ft_mutex_init(args);
+	ft_struct_init(args, philo);
 	return (args);
 }
 void	ft_struct_init(t_args *args, t_philo *philo)
@@ -65,12 +70,12 @@ void	ft_struct_init(t_args *args, t_philo *philo)
 		philo[i].args = args;
 		philo[i].last_meal = 0;
 		philo[i].meals = 0;
-		philo[i].death_timestamp = 0;
-		philo->right_fork_p = &args->mutex_arr[i];
+		philo[i].death_timestamp = args->die_t;
+		philo[i].right_fork_p = &args->mutex_arr[i];
 		if (i == 0)
-			philo->left_fork_p = &args->mutex_arr[t - 1];
+			philo[i].left_fork_p = &args->mutex_arr[t - 1];
 		else
-			philo->left_fork_p = &args->mutex_arr[i - 1];
+			philo[i].left_fork_p = &args->mutex_arr[i - 1];
 		i++;
 	}
 }

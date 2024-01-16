@@ -6,7 +6,7 @@
 /*   By: fmartini <fmartini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 18:09:18 by fmartini          #+#    #+#             */
-/*   Updated: 2024/01/15 18:12:48 by fmartini         ###   ########.fr       */
+/*   Updated: 2024/01/16 16:02:12 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,15 @@ int	ft_every_full(t_args *args)
 	int	i;
 
 	i = 0;
+	if (args->times_to_eat == -1)
+		return (0);
 	while (i < args->n_philos)
 	{
 		if ((args->philo + i)->meals >= args->times_to_eat)
+		{
+			printf("DONE EATING\n");
 			return (1);
+		}
 		i++;
 	}
 	return (0);
@@ -68,7 +73,11 @@ void	wait_for_completion(t_args *args)
 			limit = (args->philo + i)->death_timestamp;
 			timestamp = timestamp_in_ms();
 			if (limit + 10 < timestamp)
+			{
 				printf("%04i %02d\033[0;35m died\033[0m\n", timestamp - 10, i);
+				deaths++;
+				break;
+			}
 			i++;
 		}
 	}
