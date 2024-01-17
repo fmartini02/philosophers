@@ -6,7 +6,7 @@
 /*   By: fmartini <fmartini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 18:22:47 by fmartini          #+#    #+#             */
-/*   Updated: 2023/12/18 16:54:26 by fmartini         ###   ########.fr       */
+/*   Updated: 2024/01/17 15:53:43 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,30 +27,15 @@ static int	create_threads(t_args *args)
 	}
 	return (1);
 }
-static int	stop_threads(t_args *args)
-{
-	int	i;
-	int	fail;
-
-	i = 0;
-	while (i < args->n_philos)
-	{
-		fail = pthread_detach(args->thread_arr[i]);
-		if (fail)
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
 int	main(int ac, char **av)
 {
 	t_args	*args;
+	int		i;
 
+	i = 0;
 	if (ac < 5 || ac > 6)
 	{
 		printf("wrong arguments\n");
-		printf("arguments must be: num_philo, die_time, eat_time, sleep_time and eat_number(optional)\n");
 		return (1);
 	}
 	args = ft_init_resurce(av);
@@ -64,8 +49,11 @@ int	main(int ac, char **av)
 	if (!create_threads(args))
 		return (2);
 	wait_for_completion(args);
-	if (!stop_threads(args))
-		return (3);
+	while(i < args->n_philos)
+	{
+		pthread_join(args->thread_arr[i], NULL);
+		i++;
+	}
 	usleep(10000);
 	ft_free_mem(args);
 	return (0);

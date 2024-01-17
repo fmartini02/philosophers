@@ -6,7 +6,7 @@
 /*   By: fmartini <fmartini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 18:15:27 by fmartini          #+#    #+#             */
-/*   Updated: 2024/01/15 17:13:17 by fmartini         ###   ########.fr       */
+/*   Updated: 2024/01/17 16:06:59 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ typedef struct s_philo
 typedef struct s_args
 {
 	pthread_t		*thread_arr;
+	pthread_mutex_t	checker_m;
 	pthread_mutex_t	print_m;
 	pthread_mutex_t	*mutex_arr;
 	int				n_philos;
@@ -40,6 +41,7 @@ typedef struct s_args
 	int				eat_t;
 	int				sleep_t;
 	int				times_to_eat;
+	int				end;
 	t_philo			*philo;
 }				t_args;
 
