@@ -6,7 +6,7 @@
 /*   By: fmartini <fmartini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 18:10:15 by fmartini          #+#    #+#             */
-/*   Updated: 2023/12/18 16:54:49 by fmartini         ###   ########.fr       */
+/*   Updated: 2024/01/22 18:29:10 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	ft_ferror(void)
 	exit(1);
 }
 
-uint64_t	gettimeofday_ms(void)
+long int	gettimeofday_ms(void)
 {
 	static struct timeval	tv;
 
@@ -26,9 +26,9 @@ uint64_t	gettimeofday_ms(void)
 	return ((tv.tv_sec * (uint64_t)1000) + (tv.tv_usec / 1000));
 }
 
-uint64_t	timestamp_in_ms(void)
+long int	timestamp_in_ms(void)
 {
-	static uint64_t	start = 0;
+	static long int	start = 0;
 
 	if (start == 0)
 		start = gettimeofday_ms();

@@ -6,7 +6,7 @@
 /*   By: fmartini <fmartini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 18:22:47 by fmartini          #+#    #+#             */
-/*   Updated: 2024/01/17 15:53:43 by fmartini         ###   ########.fr       */
+/*   Updated: 2024/01/22 17:57:07 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,28 @@ static int	create_threads(t_args *args)
 	}
 	return (1);
 }
+
+void ft_wrong_arguments(void)
+{
+	printf("wrong arguments\n");
+	printf("usage: ./philosophers n_philos die_t eat_t sleep_t [times_to_eat]\n");
+	exit(1);
+}
+
+void	ft_print(char *str, int id, t_philo *p)
+{
+	pthread_mutex_lock(&p->args->checker_m);
+	if (p->args->end == 1)
+	{
+		pthread_mutex_unlock(&p->args->checker_m);
+		return ;
+	}
+	pthread_mutex_unlock(&p->args->checker_m);
+	pthread_mutex_lock(&p->args->print_m);
+	printf("timestamp:%li [%d] %s", timestamp_in_ms(), id, str);
+	pthread_mutex_unlock(&p->args->print_m);
+}
+
 int	main(int ac, char **av)
 {
 	t_args	*args;
@@ -34,10 +56,7 @@ int	main(int ac, char **av)
 
 	i = 0;
 	if (ac < 5 || ac > 6)
-	{
-		printf("wrong arguments\n");
-		return (1);
-	}
+		ft_wrong_arguments();
 	args = ft_init_resurce(av);
 	if (!args)
 		return (1);

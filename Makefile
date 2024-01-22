@@ -6,11 +6,11 @@
 #    By: fmartini <fmartini@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/06 18:24:04 by fmartini          #+#    #+#              #
-#    Updated: 2023/12/18 15:41:10 by fmartini         ###   ########.fr        #
+#    Updated: 2024/01/22 18:07:31 by fmartini         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = philosophers
+NAME = philo
 
 CC = gcc
 

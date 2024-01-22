@@ -6,7 +6,7 @@
 /*   By: fmartini <fmartini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 18:15:27 by fmartini          #+#    #+#             */
-/*   Updated: 2024/01/17 16:06:59 by fmartini         ###   ########.fr       */
+/*   Updated: 2024/01/22 18:51:26 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 #include <pthread.h>
 #include <sys/time.h>
 #include <stdint.h>
-#include "libft/libft.h"
 
 typedef struct s_philo
 {
@@ -55,8 +54,8 @@ void		wait_for_completion(t_args *args);
 int			ft_atoi(char *str);
 void		ft_mutex_init(t_args *args);
 void		ft_struct_init(t_args *args, t_philo *philo);
-uint64_t	timestamp_in_ms(void);
-uint64_t	gettimeofday_ms(void);
+long int	timestamp_in_ms(void);
+long int	gettimeofday_ms(void);
 void		ft_free_mem(t_args *args);
-void		ft_drop_forks(t_philo *philo, int id);
+void		ft_print(char *str, int id, t_philo *p);
 t_args		*ft_init_resurce(char **av);

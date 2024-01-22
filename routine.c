@@ -6,7 +6,7 @@
 /*   By: fmartini <fmartini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 18:13:54 by fmartini          #+#    #+#             */
-/*   Updated: 2024/01/17 16:31:24 by fmartini         ###   ########.fr       */
+/*   Updated: 2024/01/22 18:30:03 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,18 @@ void	ft_eat(t_philo *p)
 	p->death_timestamp = p->last_meal + p->args->die_t;
 	pthread_mutex_unlock(&p->args->checker_m);
 	usleep(p->args->eat_t * 1000);
+	pthread_mutex_unlock(p->right_fork_p);
+	pthread_mutex_unlock(p->left_fork_p);
 }
 
+void	ft_pick_forks(t_philo *philo)
+{
+	pthread_mutex_lock(philo->right_fork_p);
+	pthread_mutex_lock(philo->left_fork_p);
+	ft_print("has taken a fork\n",philo->id, philo);
+	ft_print("has taken a fork\n",philo->id, philo);
+	ft_print("is eating\n",philo->id, philo);
+}
 void	*ft_routine(void *arg)
 {
 	t_philo	*philo;
@@ -33,44 +43,11 @@ void	*ft_routine(void *arg)
 		usleep(1000 * 3);
 	while (1)
 	{
-		pthread_mutex_lock(&philo->args->checker_m);
-		if (philo->args->end == 1)
-		{
-			pthread_mutex_unlock(&philo->args->checker_m);
-			return (NULL);
-		}
-		pthread_mutex_unlock(&philo->args->checker_m);
-		pthread_mutex_lock(philo->right_fork_p);
-		pthread_mutex_lock(philo->left_fork_p);
-		pthread_mutex_lock(&philo->args->print_m);
-		printf("%04li %02d\e[1;35m has taken a fork\e[0m\n", timestamp_in_ms(), philo->id);
-		printf("%04li %02d\e[1;35m has taken a fork\e[0m\n", timestamp_in_ms(), philo->id);
-		printf("%04li %02d\e[1;32m is eating\e[0m\n", timestamp_in_ms(), philo->id);
-		pthread_mutex_unlock(&philo->args->print_m);
+		ft_pick_forks(philo);
 		ft_eat(philo);
-		pthread_mutex_unlock(philo->right_fork_p);
-		pthread_mutex_unlock(philo->left_fork_p);
-		pthread_mutex_lock(&philo->args->checker_m);
-		if (philo->args->end == 1)
-		{
-			pthread_mutex_unlock(&philo->args->checker_m);
-			return (NULL);
-		}
-		pthread_mutex_unlock(&philo->args->checker_m);
-		pthread_mutex_lock(&philo->args->print_m);
-		printf("%04li %02d\e[1;34m is sleeping\e[0m\n", timestamp_in_ms(), philo->id);
-		pthread_mutex_unlock(&philo->args->print_m);
+		ft_print("is sleeping\n", philo->id, philo);
 		usleep(philo->args->sleep_t * 1000);
-		pthread_mutex_lock(&philo->args->checker_m);
-		if (philo->args->end == 1)
-		{
-			pthread_mutex_unlock(&philo->args->checker_m);
-			return (NULL);
-		}
-		pthread_mutex_unlock(&philo->args->checker_m);
-		pthread_mutex_lock(&philo->args->print_m);
-		printf("%04li %02d\e[1;33m is thinking\e[0m\n", timestamp_in_ms(), philo->id);
-		pthread_mutex_unlock(&philo->args->print_m);
+		ft_print("is thinking\n", philo->id, philo);
 	}
 	return (NULL);
 }
