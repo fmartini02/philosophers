@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initializer.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmartini <fmartini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmartini <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 16:51:52 by fmartini          #+#    #+#             */
-/*   Updated: 2024/01/22 18:31:47 by fmartini         ###   ########.fr       */
+/*   Updated: 2024/02/02 17:52:22 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void	ft_mutex_init(t_args *args)
 	}
 	pthread_mutex_init(&args->print_m, NULL);
 	pthread_mutex_init(&args->checker_m, NULL);
+	pthread_mutex_init(&args->checker2_m, NULL);
 }
 
 void	ft_struct_init(t_args *args, t_philo *philo)
@@ -61,7 +62,7 @@ t_args	*ft_init_resurce(char **av)
 	args = malloc(sizeof(t_args));
 	args->thread_arr = malloc(sizeof(pthread_t) * (ft_atoi(av[1])));
 	philo = malloc(sizeof(t_philo) * (ft_atoi(av[1])));
-	if (args == NULL || args->thread_arr == NULL || args->philo == NULL)
+	if (args == NULL || args->thread_arr == NULL || philo == NULL)
 		ft_ferror();
 	args->philo = philo;
 	args->n_philos = ft_atoi(av[1]);

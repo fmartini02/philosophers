@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   checker_fun.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmartini <fmartini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmartini <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 18:09:18 by fmartini          #+#    #+#             */
-/*   Updated: 2024/01/22 18:32:17 by fmartini         ###   ########.fr       */
+/*   Updated: 2024/02/05 15:46:18 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,14 +53,13 @@ int	ft_every_full(t_args *args)
 	}
 	return (res);
 }
-int	ft_dead(t_args *args, int i, int deaths)
+int	ft_dead(t_args *args, int i)
 {
 	ft_print("died\n", i, args->philo + i);
-	deaths++;
 	pthread_mutex_lock(&args->checker_m);
 	args->end = 1;
 	pthread_mutex_unlock(&args->checker_m);
-	return (deaths);
+	return (1);
 }
 void	ft_full(t_args *args)
 {
@@ -76,19 +75,23 @@ void	wait_for_completion(t_args *args)
 	int	limit;
 	int	timestamp;
 	int	i;
+	t_philo	*philo;
 
 	i = 0;
 	deaths = 0;
+	philo = args->philo;
 	while (!deaths && !ft_every_full(args))
 	{
 		i = 0;
 		while (i < args->n_philos)
 		{
-			limit = (args->philo + i)->death_timestamp;
+			pthread_mutex_lock(&args->checker_m);
+			limit = philo[i].death_timestamp;
+			pthread_mutex_unlock(&args->checker_m);
 			timestamp = timestamp_in_ms();
 			if (limit < timestamp)
 			{
-				deaths = ft_dead(args, i, deaths);
+				deaths = ft_dead(args, i);
 				break;
 			}
 			i++;
