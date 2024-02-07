@@ -6,7 +6,7 @@
 /*   By: fmartini <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 18:09:18 by fmartini          #+#    #+#             */
-/*   Updated: 2024/02/05 15:46:18 by fmartini         ###   ########.fr       */
+/*   Updated: 2024/02/06 21:22:58 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,9 +85,10 @@ void	wait_for_completion(t_args *args)
 		i = 0;
 		while (i < args->n_philos)
 		{
-			pthread_mutex_lock(&args->checker_m);
+			usleep(300);
+			pthread_mutex_lock(&args->dstamp_m);
 			limit = philo[i].death_timestamp;
-			pthread_mutex_unlock(&args->checker_m);
+			pthread_mutex_unlock(&args->dstamp_m);
 			timestamp = timestamp_in_ms();
 			if (limit < timestamp)
 			{

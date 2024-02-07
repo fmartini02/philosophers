@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmartini <fmartini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmartini <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 18:10:15 by fmartini          #+#    #+#             */
-/*   Updated: 2024/01/22 18:29:10 by fmartini         ###   ########.fr       */
+/*   Updated: 2024/02/07 16:38:40 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,10 @@ int	ft_atoi(char *str)
 void ft_free_mem(t_args *args)
 {
 	pthread_mutex_destroy(&args->print_m);
+	pthread_mutex_destroy(&args->checker_m);
+	pthread_mutex_destroy(&args->dstamp_m);
+	while (args->n_philos--)
+		pthread_mutex_destroy(&args->mutex_arr[args->n_philos]);
 	free(args->philo);
 	free(args->mutex_arr);
 	free(args->thread_arr);

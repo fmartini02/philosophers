@@ -6,7 +6,7 @@
 /*   By: fmartini <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 16:51:52 by fmartini          #+#    #+#             */
-/*   Updated: 2024/02/02 17:52:22 by fmartini         ###   ########.fr       */
+/*   Updated: 2024/02/07 16:33:16 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	ft_mutex_init(t_args *args)
 	}
 	pthread_mutex_init(&args->print_m, NULL);
 	pthread_mutex_init(&args->checker_m, NULL);
-	pthread_mutex_init(&args->checker2_m, NULL);
+	pthread_mutex_init(&args->dstamp_m, NULL);
 }
 
 void	ft_struct_init(t_args *args, t_philo *philo)

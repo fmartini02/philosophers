@@ -6,7 +6,7 @@
 /*   By: fmartini <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 18:15:27 by fmartini          #+#    #+#             */
-/*   Updated: 2024/02/02 17:52:01 by fmartini         ###   ########.fr       */
+/*   Updated: 2024/02/07 16:31:33 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ typedef struct s_args
 	pthread_mutex_t	checker_m;
 	pthread_mutex_t	print_m;
 	pthread_mutex_t	*mutex_arr;
-	pthread_mutex_t checker2_m;
+	pthread_mutex_t dstamp_m;
 	int				n_philos;
 	int				die_t;
 	int				eat_t;
