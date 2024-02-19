@@ -6,7 +6,7 @@
 /*   By: fmartini <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/28 16:21:54 by fmartini          #+#    #+#             */
-/*   Updated: 2024/01/28 16:22:03 by fmartini         ###   ########.fr       */
+/*   Updated: 2024/02/19 18:34:16 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ static int	create_threads(t_args *args)
 	i = 0;
 	while (i < args->n_philos)
 	{
-		fail = pthread_create(args->thread_arr + i, NULL, &ft_routine, (args->philo) + i);
+		fail = pthread_create(args->thread_arr + i, NULL,
+				&ft_routine, (args->philo) + i);
 		if (fail)
 			return (0);
 		i++;
@@ -28,10 +29,10 @@ static int	create_threads(t_args *args)
 	return (1);
 }
 
-void ft_wrong_arguments(void)
+void	ft_wrong_arguments(void)
 {
 	printf("wrong arguments\n");
-	printf("usage: ./philosophers n_philos die_t eat_t sleep_t [times_to_eat]\n");
+	printf("usage:./philosophers n_philos die_t eat_t sleep_t *times_to_eat\n");
 	exit(1);
 }
 
@@ -68,7 +69,7 @@ int	main(int ac, char **av)
 	if (!create_threads(args))
 		return (2);
 	wait_for_completion(args);
-	while(i < args->n_philos)
+	while (i < args->n_philos)
 	{
 		pthread_join(args->thread_arr[i], NULL);
 		i++;

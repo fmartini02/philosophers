@@ -6,7 +6,7 @@
 /*   By: fmartini <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 18:10:15 by fmartini          #+#    #+#             */
-/*   Updated: 2024/02/07 16:38:40 by fmartini         ###   ########.fr       */
+/*   Updated: 2024/02/19 18:31:50 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	ft_atoi(char *str)
 	return (nmb *= sign);
 }
 
-void ft_free_mem(t_args *args)
+void	ft_free_mem(t_args *args)
 {
 	pthread_mutex_destroy(&args->print_m);
 	pthread_mutex_destroy(&args->checker_m);

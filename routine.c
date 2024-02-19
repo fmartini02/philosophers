@@ -6,7 +6,7 @@
 /*   By: fmartini <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 18:13:54 by fmartini          #+#    #+#             */
-/*   Updated: 2024/02/07 17:12:14 by fmartini         ###   ########.fr       */
+/*   Updated: 2024/02/19 18:28:47 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,20 @@
 
 void	ft_lock_forks(t_philo *p)
 {
-	pthread_mutex_lock(p->right_fork_p);
-	ft_print("has taken right fork\n", p->id, p);
-	pthread_mutex_lock(p->left_fork_p);
-	ft_print("has taken left fork\n", p->id, p);
+	if (p->id % 2 != 0)
+	{
+		pthread_mutex_lock(p->right_fork_p);
+		ft_print("has taken right fork\n", p->id, p);
+		pthread_mutex_lock(p->left_fork_p);
+		ft_print("has taken left fork\n", p->id, p);
+	}
+	else
+	{
+		pthread_mutex_lock(p->left_fork_p);
+		ft_print("has taken left fork\n", p->id, p);
+		pthread_mutex_lock(p->right_fork_p);
+		ft_print("has taken right fork\n", p->id, p);
+	}
 }
 
 void	ft_eat(t_philo *p)
@@ -28,9 +38,10 @@ void	ft_eat(t_philo *p)
 	p->last_meal = timestamp_in_ms();
 	p->death_timestamp = p->last_meal + p->args->die_t;
 	pthread_mutex_unlock(&p->args->dstamp_m);
-	ft_print("is eating\n",p->id, p);
+	ft_print("is eating\n", p->id, p);
 	usleep(p->args->eat_t * 1000);
 	pthread_mutex_unlock(p->right_fork_p);
+	usleep(300);
 	pthread_mutex_unlock(p->left_fork_p);
 }
 
@@ -54,9 +65,7 @@ void	*ft_routine(void *arg)
 		return (NULL);
 	philo = (t_philo *)arg;
 	if (philo->id % 2 == 0)
-		usleep(3000);
-	if (philo->id == philo->args->n_philos)
-		usleep(1000);
+		usleep(300);
 	while (ft_check_death(philo) == 0)
 	{
 		ft_print("before eat\n", philo->id, philo);
@@ -68,4 +77,3 @@ void	*ft_routine(void *arg)
 	}
 	return (NULL);
 }
-

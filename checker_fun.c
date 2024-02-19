@@ -6,7 +6,7 @@
 /*   By: fmartini <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 18:09:18 by fmartini          #+#    #+#             */
-/*   Updated: 2024/02/06 21:22:58 by fmartini         ###   ########.fr       */
+/*   Updated: 2024/02/19 18:35:51 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	ft_one_philo(t_philo *p, int left_fork, int id)
 	free(p->args->thread_arr);
 	free(p->args);
 	free(p);
-	return;
+	return ;
 }
 
 int	ft_every_full(t_args *args)
@@ -47,20 +47,22 @@ int	ft_every_full(t_args *args)
 		{
 			res = 0;
 			pthread_mutex_unlock(&args->checker_m);
-			break;
+			break ;
 		}
 		pthread_mutex_unlock(&args->checker_m);
 	}
 	return (res);
 }
+
 int	ft_dead(t_args *args, int i)
 {
-	ft_print("died\n", i, args->philo + i);
+	ft_print("died\n", i + 1, args->philo + i);
 	pthread_mutex_lock(&args->checker_m);
 	args->end = 1;
 	pthread_mutex_unlock(&args->checker_m);
 	return (1);
 }
+
 void	ft_full(t_args *args)
 {
 	ft_print("All philosophers have eaten enough\n", 0, args->philo);
@@ -71,33 +73,29 @@ void	ft_full(t_args *args)
 
 void	wait_for_completion(t_args *args)
 {
-	int deaths;
-	int	limit;
-	int	timestamp;
-	int	i;
+	int		limit;
+	int		timestamp;
+	int		i;
 	t_philo	*philo;
 
 	i = 0;
-	deaths = 0;
 	philo = args->philo;
-	while (!deaths && !ft_every_full(args))
+	while (!args->end && !ft_every_full(args))
 	{
 		i = 0;
 		while (i < args->n_philos)
 		{
-			usleep(300);
 			pthread_mutex_lock(&args->dstamp_m);
 			limit = philo[i].death_timestamp;
 			pthread_mutex_unlock(&args->dstamp_m);
 			timestamp = timestamp_in_ms();
 			if (limit < timestamp)
-			{
-				deaths = ft_dead(args, i);
-				break;
-			}
+				ft_dead(args, i);
+			if (args->end)
+				break ;
 			i++;
 		}
 	}
-	if (!deaths)
+	if (!args->end)
 		ft_full(args);
 }

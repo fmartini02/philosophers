@@ -6,10 +6,9 @@
 /*   By: fmartini <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 18:15:27 by fmartini          #+#    #+#             */
-/*   Updated: 2024/02/07 16:31:33 by fmartini         ###   ########.fr       */
+/*   Updated: 2024/02/19 18:31:07 by fmartini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,7 +34,7 @@ typedef struct s_args
 	pthread_mutex_t	checker_m;
 	pthread_mutex_t	print_m;
 	pthread_mutex_t	*mutex_arr;
-	pthread_mutex_t dstamp_m;
+	pthread_mutex_t	dstamp_m;
 	int				n_philos;
 	int				die_t;
 	int				eat_t;
@@ -44,8 +43,6 @@ typedef struct s_args
 	int				end;
 	t_philo			*philo;
 }				t_args;
-
-
 
 void		ft_eat(t_philo *args);
 void		*ft_routine(void *arg);
